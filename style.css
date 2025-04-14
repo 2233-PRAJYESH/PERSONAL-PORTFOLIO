@@ -699,6 +699,28 @@ body.dark-theme .project-card {
 
 .contact-container {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+.contact-info {
+    text-align: center;
+}
+
+.contact-item {
+    margin-bottom: 2rem;
+}
+
+.contact-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.contact-container {
+    display: flex;
     gap: 2rem;
     flex-wrap: wrap;
 }

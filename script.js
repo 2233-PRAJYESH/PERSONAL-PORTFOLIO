@@ -240,37 +240,50 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Contact form submission
-const contactForm = document.getElementById('contactForm');
-const thanksModal = document.getElementById('thanksModal');
-const modalBtn = document.querySelector('.modal-btn');
-
-contactForm.addEventListener('submit', (e) => {
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    // Here we would normally submit the form data to a server
-    // For this prototype, we're just showing the thank you modal
+    const submitButton = this.querySelector('.btn-submit');
+    const btnText = submitButton.querySelector('.btn-text');
+    const btnLoader = submitButton.querySelector('.btn-loader');
     
-    thanksModal.classList.add('active');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    // Reset form
-    contactForm.reset();
-    
-    // Create success sparkles
-    const rect = thanksModal.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    for (let i = 0; i < 3; i++) {
-        setTimeout(() => {
-            createSparkles(centerX, centerY);
-        }, i * 300);
+    // Get form data
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        subject: document.getElementById('subject').value,
+        message: document.getElementById('message').value
+    };
+
+    // Show loading state
+    submitButton.disabled = true;
+    btnText.classList.add('hidden');
+    btnLoader.classList.remove('hidden');
+
+    try {
+        // Process with Gemini AI
+        const aiResponse = await processContactForm(formData);
+        console.log('AI Analysis:', aiResponse);
+
+        // Show success modal
+        document.getElementById('thanksModal').classList.add('active');
+        document.querySelector('.overlay').classList.add('active');
+        
+        // Reset form
+        this.reset();
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Sorry, there was an error processing your message. Please try again.');
+    } finally {
+        // Reset button state
+        submitButton.disabled = false;
+        btnText.classList.remove('hidden');
+        btnLoader.classList.add('hidden');
     }
 });
 
-modalBtn.addEventListener('click', () => {
-    thanksModal.classList.remove('active');
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
+// Close modal functionality
+document.querySelector('.modal-btn').addEventListener('click', function() {
+    document.getElementById('thanksModal').classList.remove('active');
+    document.querySelector('.overlay').classList.remove('active');
 });
